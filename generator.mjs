@@ -6,8 +6,8 @@ import inquirerPrompt from 'inquirer-autocomplete-prompt';
 
 inquirer.registerPrompt('autocomplete', inquirerPrompt);
 
-const PAGE_DIR = './src/pages';
-const PAGE_INDEX_DIR = './src/pages/index.ts';
+const PAGE_DIR = './src/app/';
+// const PAGE_INDEX_DIR = './src/pages/index.ts';
 const COMPONENT_DIR = './src/components';
 const COMPONENT_INDEX_DIR = './src/components/index.ts';
 
@@ -146,7 +146,11 @@ const start = async () => {
 
       const componentDir = `${COMPONENT_DIR}/${componentName}`;
 
-      // check component dir already exists
+      if (!(componentName[0] === componentName[0].toUpperCase())) {
+        console.log(`❌ ${componentName} 은(는) PascalCase가 아닙니다.`);
+        process.exit(0);
+      }
+
       if (fs.existsSync(componentDir)) {
         console.log(`❌ ${componentName} 은(는) 이미 존재하는 컴포넌트입니다.`);
         process.exit(0);
@@ -166,7 +170,11 @@ const start = async () => {
 
       const pageDir = `${PAGE_DIR}/${pageName}`;
 
-      // 페이지 디렉토리가 이미 존재하는지 확인
+      if (!(pageName[0] === pageName[0].toUpperCase())) {
+        console.log(`❌ ${componentName} 은(는) PascalCase가 아닙니다.`);
+        process.exit(0);
+      }
+
       if (fs.existsSync(pageDir)) {
         console.log(`❌ ${pageName}은 이미 존재하는 페이지입니다.`);
         process.exit(0);
