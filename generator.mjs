@@ -35,7 +35,7 @@ const createIndexFileText = name => {
 
 const createComponentFileText = name => {
   return [
-    `import React from 'react';`,
+    `'use client';`,
     ``,
     `import * as S from './${name}.styled';`,
     ``,
