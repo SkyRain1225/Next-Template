@@ -20,8 +20,8 @@ const getDirectories = async source =>
     .filter(dirent => dirent.isDirectory())
     .map(dirent => dirent.name);
 
-const createIndexFileText = (name, type) => {
-  const indexFileDir = type === 'component' ? COMPONENT_INDEX_DIR : PAGE_INDEX_DIR;
+const createIndexFileText = name => {
+  const indexFileDir = COMPONENT_INDEX_DIR;
 
   if (fs.existsSync(indexFileDir)) {
     const importStatement = `export { default as ${name} } from './${name}/${name}';`;
@@ -65,15 +65,11 @@ const createStyledFileText = name => {
 
 const createPageFileText = name => {
   return [
-    `import React from 'react';`,
-    ``,
-    `import * as S from './${name}.styled';`,
-    ``,
     `const ${capitalize(name)} = () => {`,
     `  return (`,
-    `    <S.Container>`,
+    `    <>`,
     `      `,
-    `    </S.Container>`,
+    `    </>`,
     `  );`,
     `};`,
     ``,
@@ -164,14 +160,14 @@ const start = async () => {
       const { pageName } = await inquirer.prompt([
         createPromptInput({
           name: 'pageName',
-          label: '페이지의 이름을 작성해주세요. (PascalCase)',
+          label: '페이지의 이름을 작성해주세요. (LowerCase)',
         }),
       ]);
 
       const pageDir = `${PAGE_DIR}/${pageName}`;
 
-      if (!(pageName[0] === pageName[0].toUpperCase())) {
-        console.log(`❌ ${componentName} 은(는) PascalCase가 아닙니다.`);
+      if (/[A-Z]/.test(pageName)) {
+        console.log(`❌ ${pageName} 은(는) LowerCase가 아닙니다.`);
         process.exit(0);
       }
 
@@ -181,14 +177,12 @@ const start = async () => {
       }
 
       fs.mkdirSync(pageDir, { recursive: true });
-      fs.writeFileSync(`${pageDir}/${pageName}.styled.ts`, createStyledFileText(pageName));
-      fs.writeFileSync(`${pageDir}/${pageName}.tsx`, createPageFileText(pageName));
-      createIndexFileText(pageName);
+      fs.writeFileSync(`${pageDir}/page.tsx`, createPageFileText(pageName));
 
       console.log(`🎉 ${pageName} 페이지를 성공적으로 생성했습니다.`);
       console.log(`📂 파일 열기 중...`);
 
-      exec(`code -g ${pageDir}/${pageName}.tsx:6:7`);
+      exec(`code -g ${pageDir}/page.tsx:6:7`);
       break;
     }
   }
